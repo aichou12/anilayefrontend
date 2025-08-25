@@ -5,20 +5,20 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthRequest } from '../../../core/models/auth-request.model';
 
-
 /**
  * Composant pour la page de connexion
  */
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
   isLoading = false;
+  showPassword = false;
   errorMessage = '';
 
   constructor(
@@ -49,9 +49,22 @@ export class LoginComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Erreur de connexion';
+          this.errorMessage = error.error?.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.';
+          console.error('Erreur de connexion:', error);
         }
       });
+    } else {
+      // Marquer tous les champs comme touchés pour afficher les erreurs de validation
+      Object.keys(this.loginForm.controls).forEach(key => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
     }
+  }
+
+  /**
+   * Affiche ou masque le mot de passe
+   */
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }

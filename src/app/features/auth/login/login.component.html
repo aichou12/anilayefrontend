@@ -1,52 +1,74 @@
 <div class="login-container">
-    <div class="login-card">
-      <h2>Connexion à Anilaye</h2>
+  <!-- Partie gauche -->
+  <div class="login-left">
+    <div class="logo-corner">
+      <img src="assets/woterflow_img.png" alt="Logo Waterflow">
+    </div>
+    <div class="logo-text">
+      <h2>Connectez vous</h2>
+      <p>Bienvenue de retour sur la plateforme !</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-        <div class="form-group">
-          <label for="email">Email</label>
+      <!-- Champ Email -->
+      <div class="form-group">
+        <div class="input-icon">
+          <i class="fas fa-user"></i>
           <input 
             id="email" 
-            type="email" 
+            type="text" 
             formControlName="email" 
-            placeholder="Votre email"
-            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']">L'email est obligatoire</span>
-            <span *ngIf="loginForm.get('email')?.errors?.['email']">L'email doit être valide</span>
-          </div>
+            placeholder="Adresse email ou numéro de téléphone">
         </div>
-  
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <input 
-            id="password" 
-            type="password" 
-            formControlName="password" 
-            placeholder="Votre mot de passe"
-            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">Le mot de passe est obligatoire</span>
-            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">
-              Le mot de passe doit avoir au moins 6 caractères
-            </span>
-          </div>
+        <div class="error-message" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">L'email est obligatoire</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Format email invalide</span>
         </div>
-  
-        <div class="error-message" *ngIf="errorMessage">
-          {{ errorMessage }}
-        </div>
-  
-        <button 
-          type="submit" 
-          class="login-button" 
-          [disabled]="loginForm.invalid || isLoading">
-          {{ isLoading ? 'Connexion...' : 'Se connecter' }}
-        </button>
-      </form>
-  
-      <div class="register-link">
-        <p>Vous n'avez pas de compte ? <a routerLink="/register">Créer un compte</a></p>
       </div>
-    </div>
+
+      <!-- Champ Mot de passe -->
+      <div class="form-group">
+        <div class="input-icon password-wrapper">
+          <i class="fas fa-lock"></i>
+          <input 
+            [type]="showPassword ? 'text' : 'password'"
+            id="password" 
+            formControlName="password" 
+            placeholder="Mot de passe">
+          <i class="fas"
+             [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+             (click)="togglePasswordVisibility()"></i>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Mot de passe obligatoire</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Minimum 6 caractères</span>
+        </div>
+        <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
+      </div>
+
+      <!-- Message d'erreur global -->
+      <div class="error-message server-error" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Bouton Connexion -->
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-login">
+        <span *ngIf="!isLoading">Connexion</span>
+        <span *ngIf="isLoading" class="loading-spinner"></span>
+      </button>
+    </form>
+
+    <!-- Lien inscription -->
+    <p class="register-text">
+      Vous n'avez pas de compte ? 
+      <a routerLink="/register">Créer un compte</a>
+    </p>
   </div>
+
+  <!-- Partie droite (image) -->
+  <div class="login-right">
+    <img src="assets/login_img.png" alt="Illustration maman et enfant">
+  </div>
+</div>

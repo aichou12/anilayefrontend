@@ -1,91 +1,150 @@
+/* ====== Container principal ====== */
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    padding: 20px;
-  }
-  
-  .login-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #333;
-  }
-  
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #555;
-  }
-  
-  input {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    
-    &.error {
-      border-color: #e74c3c;
-    }
-  }
-  
-  .error-message {
-    color: #e74c3c;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-  
-  .login-button {
-    background-color: #3498db;
-    color: white;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    
-    &:hover:not(:disabled) {
-      background-color: #2980b9;
-    }
-    
-    &:disabled {
-      background-color: #bdc3c7;
-      cursor: not-allowed;
-    }
-  }
-  .register-link {
-    margin-top: 1.5rem;
-    text-align: center;
-    color: #666;
-    
-    a {
-      color: #3498db;
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
+  display: flex;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  position: relative;
+}
+
+/* ====== Colonne gauche ====== */
+.login-left {
+  flex: 0.8; /* plus petit => plus de place à l'image */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 40px;
+  position: relative;
+}
+
+/* ====== Logo coin haut gauche (réduit encore) ====== */
+.logo-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #0066d9;
+  width: 90px;   /* réduit encore */
+  height: 90px;
+  border-radius: 0 0 55% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-corner img {
+  width: 55px; /* plus petit */
+  filter: brightness(0) invert(1);
+  margin-bottom: 3px;
+}
+
+.logo-corner span {
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+}
+
+/* ====== Texte accueil ====== */
+.logo-text h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.logo-text p {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* ====== Formulaire ====== */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Champs avec icônes */
+.input-icon {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.input-icon i {
+  margin-right: 12px;
+  color: #0066d9;
+}
+
+.input-icon input {
+  border: none;
+  outline: none;
+  flex: 1;
+  background: transparent;
+  font-size: 15px;
+}
+
+/* Lien mot de passe oublié */
+.forgot-link {
+  font-size: 13px;
+  color: #007bff;
+  text-decoration: none;
+  display: block;
+  text-align: right;
+  margin-top: 5px;
+}
+
+/* ====== Bouton Connexion ====== */
+.btn-login {
+  background-color: #0066d9;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #0052b1;
+}
+
+/* Texte inscription */
+.register-text {
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.register-text a {
+  color: #007bff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* ====== Partie droite (image) ====== */
+.login-right {
+  flex: 1.5; /* plus grand qu’avant */
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-right img {
+  max-width: 100%;   /* prend toute la largeur */
+  max-height: 80%;   /* prend presque toute la hauteur */
+  border-radius: 20px;
+  object-fit: cover;
+}
