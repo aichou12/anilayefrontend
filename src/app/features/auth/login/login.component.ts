@@ -4,6 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthRequest } from '../../../core/models/auth-request.model';
+import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Composant pour la page de connexion
@@ -19,12 +21,12 @@ export class LoginComponent {
   loginForm: FormGroup;
   isLoading = false;
   showPassword = false;
-  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,25 +40,121 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.errorMessage = '';
       
-      const authRequest: AuthRequest = this.loginForm.value;
+      const authRequest: AuthRequest = {
+        email: this.loginForm.get('email')?.value,
+        password: this.loginForm.get('password')?.value
+      };
       
       this.authService.login(authRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
+          this.toastr.success('Connexion réussie!', 'Bienvenue', {
+            timeOut: 3000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+            closeButton: true
+          });
           this.router.navigate(['/dashboard']);
         },
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.';
-          console.error('Erreur de connexion:', error);
+          
+          console.log('Erreur complète:', error);
+          
+          // Extraction du message d'erreur depuis la réponse du backend
+          let errorMessage = 'Email ou mot de passe incorrect';
+          
+          if (error.error && typeof error.error === 'object') {
+            // Si l'erreur est un objet avec une propriété message
+            errorMessage = error.error.message || errorMessage;
+          } else if (typeof error.error === 'string') {
+            // Si l'erreur est une chaîne de caractères
+            errorMessage = error.error;
+          }
+          
+          // Gestion des erreurs spécifiques
+          if (error.status === 401) {
+            this.toastr.error(errorMessage, 'Erreur d\'authentification', {
+              timeOut: 5000,
+              positionClass: 'toast-top-right',
+              progressBar: true,
+              closeButton: true
+            });
+          } else if (error.status === 0) {
+            this.toastr.error('Impossible de se connecter au serveur', 'Erreur réseau', {
+              timeOut: 5000,
+              positionClass: 'toast-top-right',
+              progressBar: true,
+              closeButton: true
+            });
+          } else {
+            this.toastr.error(
+              errorMessage, 
+              'Erreur', 
+              {
+                timeOut: 5000,
+                positionClass: 'toast-top-right',
+                progressBar: true,
+                closeButton: true
+              }
+            );
+          }
         }
       });
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs de validation
       Object.keys(this.loginForm.controls).forEach(key => {
-        this.loginForm.get(key)?.markAsTouched();
+        const control = this.loginForm.get(key);
+        control?.markAsTouched();
+        
+        // Afficher un toast pour le premier champ invalide
+        if (control?.invalid && !control?.pristine) {
+          this.showValidationError(key, control.errors);
+        }
+      });
+      
+      // Si le formulaire est vide, afficher un message général
+      if (this.loginForm.pristine) {
+        this.toastr.warning('Veuillez remplir tous les champs obligatoires', 'Formulaire incomplet', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true
+        });
+      }
+    }
+  }
+
+  /**
+   * Affiche les erreurs de validation via des toasts
+   */
+  private showValidationError(fieldName: string, errors: any): void {
+    let message = '';
+    
+    switch(fieldName) {
+      case 'email':
+        if (errors?.['required']) {
+          message = 'L\'adresse email est obligatoire';
+        } else if (errors?.['email']) {
+          message = 'Le format de l\'email est invalide';
+        }
+        break;
+      case 'password':
+        if (errors?.['required']) {
+          message = 'Le mot de passe est obligatoire';
+        } else if (errors?.['minlength']) {
+          message = 'Le mot de passe doit contenir au moins 6 caractères';
+        }
+        break;
+    }
+    
+    if (message) {
+      this.toastr.warning(message, 'Champ invalide', {
+        timeOut: 5000,
+        positionClass: 'toast-top-right',
+        progressBar: true,
+        closeButton: true
       });
     }
   }

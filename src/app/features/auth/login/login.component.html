@@ -13,7 +13,7 @@
       
       <!-- Champ Email -->
       <div class="form-group">
-        <div class="input-icon">
+        <div class="input-icon" [class.invalid]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
           <i class="fas fa-user"></i>
           <input 
             id="email" 
@@ -21,15 +21,11 @@
             formControlName="email" 
             placeholder="Adresse email ou numéro de téléphone">
         </div>
-        <div class="error-message" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">L'email est obligatoire</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">Format email invalide</span>
-        </div>
       </div>
 
       <!-- Champ Mot de passe -->
       <div class="form-group">
-        <div class="input-icon password-wrapper">
+        <div class="input-icon password-wrapper" [class.invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
           <i class="fas fa-lock"></i>
           <input 
             [type]="showPassword ? 'text' : 'password'"
@@ -40,21 +36,11 @@
              [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
              (click)="togglePasswordVisibility()"></i>
         </div>
-        <div class="error-message" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']">Mot de passe obligatoire</span>
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Minimum 6 caractères</span>
-        </div>
         <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
       </div>
 
-      <!-- Message d'erreur global -->
-      <div class="error-message server-error" *ngIf="errorMessage">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ errorMessage }}
-      </div>
-
       <!-- Bouton Connexion -->
-      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-login">
+      <button type="submit" [disabled]="isLoading" class="btn-login">
         <span *ngIf="!isLoading">Connexion</span>
         <span *ngIf="isLoading" class="loading-spinner"></span>
       </button>
