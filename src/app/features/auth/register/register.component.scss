@@ -1,120 +1,262 @@
+/* CSS pour le formulaire d'inscription Anilaye - CENTRÉ */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: #f0f0f2;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Centre horizontalement */
+  align-items: center;     /* Centre verticalement */
+  position: relative;
+  padding: 20px;
+  overflow-x: hidden; /* Empêche le scroll horizontal */
+}
+
+/* Demi-cercle décoratif bleu en haut à gauche */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 200px;
+  background: #1976D2;
+  border-radius: 0 0 400px 0; /* Crée un quart de cercle */
+  z-index: 0;
+}
 
 .register-container {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 20px;
+  margin-left: 27%;
 }
 
 .register-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  padding: 40px 30px;
+  position: relative;
   width: 100%;
-  max-width: 500px;
 }
 
-h2 {
+/* Titre principal */
+.register-card h2 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 16px;
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: #333;
+  letter-spacing: -0.8px;
 }
 
+/* Sous-titre */
+.subtitle {
+  color: #999999;
+  text-align: center;
+  margin-bottom: 60px;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* Formulaire */
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 40px;
 }
 
+/* Prenom/Nom côte à côte */
 .form-row {
-  display: flex;
-  gap: 1rem;
-  
-  .form-group {
-    flex: 1;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
 }
 
+/* Groupes de champs */
 .form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
 
-label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #555;
+/* Labels cachés */
+.form-group label {
+  display: none;
 }
 
-input, select {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  
-  &.error {
-    border-color: #e74c3c;
-  }
+/* Icônes */
+.form-group::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0066d9;
+  font-size: 20px;
+  font-family: "Font Awesome 6 Free", "FontAwesome", sans-serif !important;
+  font-weight: 900;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: auto;
+  line-height: 1;
 }
 
+/* Icônes spécifiques */
+.prenom-group::before,
+.nom-group::before { content: "\f007"; }   /* user */
+.email-group::before { content: "\f0e0"; } /* envelope */
+.telephone-group::before { content: "\f095"; } /* phone */
+.password-group::before { content: "\f023"; } /* lock */
+.role-group::before { content: "\f0b1"; }  /* briefcase */
+
+/* Inputs + select */
+.form-group input,
+.form-group select {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #cccccc;
+  padding: 16px 0 16px 40px;
+  font-size: 16px;
+  background: transparent;
+  color: #666666;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: #999999;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+/* Focus */
+.form-group input:focus,
+.form-group select:focus {
+  border-bottom-color: #1976D2;
+  color: #333333;
+}
+
+/* Erreur */
+.form-group input.error,
+.form-group select.error {
+  border-bottom-color: #f44336;
+}
+
+/* Select custom */
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0 center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  cursor: pointer;
+  padding-right: 25px;
+}
+
+/* Messages */
 .error-message {
-  color: #e74c3c;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 8px;
+  min-height: 20px;
 }
 
 .success-message {
-  color: #27ae60;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  color: #4caf50;
+  font-size: 14px;
   text-align: center;
+  padding: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
+  margin: 16px 0;
 }
 
+/* Bouton */
 .register-button {
-  background-color: #3498db;
+  height: 56px;
+  background: #0066d9;
   color: white;
-  padding: 0.75rem;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 28px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
-  
-  &:hover:not(:disabled) {
-    background-color: #2980b9;
-  }
-  
-  &:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-  }
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
 }
 
+.register-button:hover:not(:disabled) {
+  background: #0066d9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+}
+
+.register-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Lien connexion */
 .login-link {
-  margin-top: 1.5rem;
   text-align: center;
-  color: #666;
-  
-  a {
-    color: #3498db;
-    text-decoration: none;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  margin-top: 20px;
+  color: #007bff;
 }
 
-@media (max-width: 600px) {
-  .form-row {
-    flex-direction: column;
-    gap: 1rem;
+.login-link p {
+  color: #666;
+  font-size: 15px;
+}
+
+.login-link a {
+  color: #1976D2;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body::before {
+    width: 300px;
+    height: 150px;
   }
-  
+
   .register-card {
-    padding: 1.5rem;
+    padding: 30px 20px;
+  }
+
+  .register-card h2 {
+    font-size: 32px;
+  }
+
+  .register-form {
+    gap: 30px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
 }

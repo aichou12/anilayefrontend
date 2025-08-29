@@ -1,10 +1,11 @@
 <div class="register-container">
   <div class="register-card">
-    <h2>Créer un compte Anilaye</h2>
+    <h2>Formulaire d'inscription</h2>
+    <p class="subtitle">Veuillez compléter les informations ci-dessous afin de vous inscrire.</p>
     
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group prenom-group">
           <label for="prenom">Prénom</label>
           <input 
             id="prenom" 
@@ -17,7 +18,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group nom-group">
           <label for="nom">Nom</label>
           <input 
             id="nom" 
@@ -31,13 +32,13 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group email-group">
         <label for="email">Email</label>
         <input 
           id="email" 
           type="email" 
           formControlName="email" 
-          placeholder="Votre email"
+          placeholder="Adresse email"
           [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
         <div class="error-message" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
           <span *ngIf="registerForm.get('email')?.errors?.['required']">L'email est obligatoire</span>
@@ -45,16 +46,16 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group telephone-group">
         <label for="telephone">Téléphone (optionnel)</label>
         <input 
           id="telephone" 
           type="tel" 
           formControlName="telephone" 
-          placeholder="Votre numéro de téléphone">
+          placeholder="Numéro de téléphone">
       </div>
 
-      <div class="form-group">
+      <div class="form-group password-group">
         <label for="motDePasse">Mot de passe</label>
         <input 
           id="motDePasse" 
@@ -70,7 +71,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group role-group">
         <label for="role">Rôle</label>
         <select 
           id="role" 
@@ -96,7 +97,7 @@
         type="submit" 
         class="register-button" 
         [disabled]="registerForm.invalid || isLoading">
-        {{ isLoading ? 'Création...' : 'Créer un compte' }}
+        {{ isLoading ? 'Création...' : 'Soumettre' }}
       </button>
     </form>
 
