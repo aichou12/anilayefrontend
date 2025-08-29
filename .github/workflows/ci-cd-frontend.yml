@@ -24,7 +24,7 @@ jobs:
         working-directory: .
 
       - name: Build Angular project
-        run: npm run build -- --prod
+        run: npm run build -- --configuration production
         working-directory: .
 
       - name: Run Angular tests
