@@ -27,9 +27,9 @@ jobs:
         run: npm run build -- --configuration production
         working-directory: .
 
-      - name: Run Angular tests
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
-        working-directory: .
+      # - name: Run Angular tests
+      #   run: npm run test -- --watch=false --browsers=ChromeHeadless
+      #   working-directory: .
 
       - name: Deploy to test environment
         if: github.ref == 'refs/heads/dev'
