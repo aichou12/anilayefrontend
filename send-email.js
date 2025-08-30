@@ -25,6 +25,7 @@ GitHub Actions 🚀
 sgMail
   .send({
     to: [
+      "ahmedmballo7@gmail.com",
       "arona010ndiaye@gmail.com",
       "aichasy2188@gmail.com",
       "takkinoyaya@gmail.com",
