@@ -1,43 +1,44 @@
-- name: Send email notification via SendGrid
-  if: always()
-  run: |
-    node -e '
-    const sgMail = require("@sendgrid/mail");
-    sgMail.setApiKey(process.env.SEND_MESSAGE_KEY);
+name: CI/CD Frontend Dev
 
-    const status = "${{ job.status }}";
-    const subject = status === "success"
-      ? "✅ Frontend build succeeded on dev"
-      : "❌ Frontend build failed on dev";
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
 
-    const body = `
-Bonjour l'équipe Anilaye 👋,
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
 
-Le build Angular 19 sur la branche *dev* a terminé avec le statut : **${status}**.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-📌 Repository: ${{ github.repository }}
-📌 Branch: ${{ github.ref }}
-📌 Commit: ${{ github.sha }}
-🔗 Lien: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 
 
---
-GitHub Actions 🚀
-`;
+      - name: Install dependencies
+        run: npm install
 
-    sgMail.send({
-      to: [
-        "arona010ndiaye@gmail.com",
-        "aichasy2188@gmail.com",
-        "takkinoyaya@gmail.com",
-        "nguiranebabacar305@gmail.com",
-        "maladongom104@gmail.com"
-      ],
-      from: "ahmedmballo7@gmail.com",
-      subject: subject,
-      text: body,
-      html: body.replace(/\n/g, "<br>")
-    }).then(() => console.log("✅ Email envoyé !"))
-      .catch(err => console.error("❌ Erreur envoi email:", err));
-    '
-  env:
-    SEND_MESSAGE_KEY: ${{ secrets.SEND_MESSAGE_KEY }}
+      - name: Build Angular project
+        run: npm run build -- --configuration production
+
+      - name: Deploy to test environment
+        if: github.ref == 'refs/heads/dev'
+        run: echo "🚀 Déploiement automatique frontend sur l'environnement dev"
+
+      - name: Install SendGrid SDK
+        run: npm install @sendgrid/mail
+
+      - name: Send email notification via SendGrid
+        if: always()
+        run: node send-email.js
+        env:
+          SEND_MESSAGE_KEY: ${{ secrets.SEND_MESSAGE_KEY }}
+          JOB_STATUS: ${{ job.status }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
