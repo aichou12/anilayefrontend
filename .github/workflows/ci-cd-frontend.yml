@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18 
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
@@ -28,6 +28,11 @@ jobs:
       - name: Deploy to test environment
         if: github.ref == 'refs/heads/dev'
         run: echo "🚀 Déploiement automatique frontend sur l'environnement dev"
+
+      - name: Get commit message
+        id: commit_msg
+        run: |
+          echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
       - name: Install SendGrid SDK
         run: npm install @sendgrid/mail
@@ -42,3 +47,4 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_SERVER_URL: ${{ github.server_url }}
+          COMMIT_MESSAGE: ${{ env.COMMIT_MESSAGE }}
