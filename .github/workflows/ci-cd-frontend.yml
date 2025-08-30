@@ -29,27 +29,48 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         run: echo "🚀 Déploiement automatique frontend sur l'environnement dev"
 
-      - name: Send email notification
+      - name: Install SendGrid SDK
+        run: npm install @sendgrid/mail
+
+      - name: Send email notification via SendGrid
         if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.EMAIL }}
-          password: ${{ secrets.PASSWORD }}
-          subject: |
-            ${{ job.status == 'success' && '✅ Frontend build succeeded on dev' || '❌ Frontend build failed on dev' }}
-          body: |
-            Bonjour l'équipe Anilaye 👋,
+        run: |
+          node -e "
+          const sgMail = require('@sendgrid/mail');
+          sgMail.setApiKey(process.env.SEND_MESSAGE_KEY);
 
-            Le build Angular 19 sur la branche *dev* a terminé avec le statut : **${{ job.status }}**.
+          const status = '${{ job.status }}';
+          const subject = status === 'success'
+            ? '✅ Frontend build succeeded on dev'
+            : '❌ Frontend build failed on dev';
 
-            📌 Repository: ${{ github.repository }}
-            📌 Branch: ${{ github.ref }}
-            📌 Commit: ${{ github.sha }}
-            🔗 Lien: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          const body = `
+          Bonjour l'équipe Anilaye 👋,
 
-            --
-            GitHub Actions 🚀
-          to: arona010ndiaye@gmail.com,aichasy2188@gmail.com,takkinoyaya@gmail.com,nguiranebabacar305@gmail.com,maladongom104@gmail.com
-          from: "Team Edacy Groupe 30 <${{ secrets.EMAIL }}>"
+          Le build Angular 19 sur la branche *dev* a terminé avec le statut : **${status}**.
+
+          📌 Repository: ${{ github.repository }}
+          📌 Branch: ${{ github.ref }}
+          📌 Commit: ${{ github.sha }}
+          🔗 Lien: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+
+          --
+          GitHub Actions 🚀
+          `;
+
+          sgMail.send({
+            to: [
+              'arona010ndiaye@gmail.com',
+              'aichasy2188@gmail.com',
+              'takkinoyaya@gmail.com',
+              'nguiranebabacar305@gmail.com',
+              'maladongom104@gmail.com'
+            ],
+            from: 'ahmedmballo7@gmail.com',
+            subject: subject,
+            text: body,
+            html: body.replace(/\\n/g, '<br>')
+          }).then(() => console.log('✅ Email envoyé !'))
+            .catch(err => console.error('❌ Erreur envoi email:', err));
+        env:
+          SEND_MESSAGE_KEY: ${{ secrets.SEND_MESSAGE_KEY }}
