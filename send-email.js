@@ -8,7 +8,7 @@ const subject = isSuccess
   : "❌ Frontend build failed on dev";
 
 const bodyText = `
-Bonjour l'équipe Anilaye 👋,
+Bonjour l'équipe Anilaye ,
 
 Le build Angular 19 sur la branche dev a terminé avec le statut : ${status}.
 
