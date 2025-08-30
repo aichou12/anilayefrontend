@@ -53,9 +53,10 @@ const bodyHtml = `
         <tr><th>Lien</th><td><a href="${process.env.GITHUB_SERVER_URL}/${
   process.env.GITHUB_REPOSITORY
 }/commit/${process.env.GITHUB_SHA}">Voir le commit</a></td></tr>
+<tr><th>Message</th><td>${commitMessage}</td></tr>
       </table>
     </div>
-    <div class="footer">GitHub Actions 🚀</div>
+    <div class="footer">Equipe Anilay</div>
   </div>
 </body>
 </html>
