@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { DashboardService } from '../../layout/dashboard.service';
+import { DashboardService } from '../../layout/sidebar/menu-dashboard/dashboard.service';
 
 interface StatCard {
   title: string;
