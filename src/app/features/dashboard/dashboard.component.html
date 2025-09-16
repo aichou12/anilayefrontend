@@ -1,0 +1,114 @@
+<div class="dashboard-content">
+    <div class="filters">
+      <div class="filter-row">
+        <span>Filtrer par :</span>
+        <div class="filter-item">
+          <select class="filter-select" [(ngModel)]="selectedRegion" (change)="onFilterChange()">
+            <option value="">Régions</option>
+            <option value="dakar">Dakar</option>
+            <option value="thies">Thiès</option>
+            <option value="saint-louis">Saint-Louis</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select class="filter-select" [(ngModel)]="selectedPeriod" (change)="onFilterChange()">
+            <option value="">Périodes</option>
+            <option value="today">Aujourd'hui</option>
+            <option value="week">Cette semaine</option>
+            <option value="month">Ce mois</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select class="filter-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+            <option value="">Types</option>
+            <option value="active">Actif</option>
+            <option value="inactive">Inactif</option>
+            <option value="maintenance">En maintenance</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select class="filter-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+            <option value="">Statut</option>
+            <option value="operational">Opérationnel</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="offline">Hors ligne</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <div class="stat-title">{{ stat.title }}</div>
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-change" [ngClass]="{'positive': stat.change > 0, 'negative': stat.change < 0}">
+          <mat-icon>{{ stat.change > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+          {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
+        </div>
+      </div>
+    </div>
+  
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Volume d'eau distribué</div>
+        <div class="chart-container">
+          <svg class="line-chart" viewBox="0 0 400 200">
+            <defs>
+              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <path d="M 20 150 Q 80 180 120 160 Q 160 140 200 130 Q 240 120 280 100 Q 320 80 380 50" 
+                  stroke="url(#lineGradient)" stroke-width="3" fill="none"/>
+            <circle *ngFor="let point of chartPoints" 
+                    [attr.cx]="point.x" 
+                    [attr.cy]="point.y" 
+                    r="4" 
+                    fill="#3b82f6"
+                    class="chart-point"/>
+            
+            <text *ngFor="let day of days; let i = index" 
+                  [attr.x]="30 + (i * 70)" 
+                  y="190" 
+                  font-size="12" 
+                  fill="#6b7280">{{ day }}</text>
+            
+            <text x="5" y="160" font-size="12" fill="#6b7280">100L</text>
+            <text x="5" y="110" font-size="12" fill="#6b7280">200L</text>
+            <text x="5" y="60" font-size="12" fill="#6b7280">300L</text>
+          </svg>
+        </div>
+      </div>
+  
+      <div class="chart-card">
+        <div class="chart-title">Heatmap taux d'utilisation</div>
+        <div class="chart-controls">
+          <button mat-stroked-button (click)="refreshHeatmap()">
+            <mat-icon>refresh</mat-icon>
+            Actualiser
+          </button>
+          <button mat-stroked-button (click)="exportHeatmapData()">
+            <mat-icon>download</mat-icon>
+            Exporter
+          </button>
+        </div>
+        <div class="heatmap">
+          <div class="heatmap-header">
+            <div></div>
+            <div class="heatmap-day" *ngFor="let day of weekDays">{{ day }}</div>
+          </div>
+          
+          <ng-container *ngFor="let location of heatmapData">
+            <div class="heatmap-location">{{ location.name }}</div>
+            <div class="heatmap-cell" 
+                 *ngFor="let value of location.values; let i = index" 
+                 [ngClass]="getHeatmapClass(value)"
+                 [title]="location.name + ' - ' + weekDays[i] + ': ' + value + '%'">
+              {{ value }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
