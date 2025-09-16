@@ -1,0 +1,138 @@
+<div class="content-wrapper">
+    <!-- Sidebar avec liste des distributeurs -->
+    <div class="distributeurs-sidebar">
+      <div class="search-section">
+        <div class="search-container">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Rechercher un distributeur"
+            [(ngModel)]="searchTerm"
+            (input)="onSearch()">
+        </div>
+        <button class="filter-btn" (click)="toggleFilter()">
+          <mat-icon>tune</mat-icon>
+          Filtre
+        </button>
+      </div>
+  
+      <!-- Liste des distributeurs -->
+      <div class="distributeurs-list">
+        <div 
+          class="distributeur-item" 
+          *ngFor="let distributeur of getPaginatedDistributeurs()"
+          [class.selected]="selectedDistributeur?.id === distributeur.id"
+          (click)="selectDistributeur(distributeur)">
+          
+          <div class="distributeur-header">
+            <div class="distributeur-icon">
+              <mat-icon>phone_android</mat-icon>
+            </div>
+            <div class="distributeur-info">
+              <h4>{{ distributeur.code }}</h4>
+              <div class="distributeur-status">
+                <span class="status-badge" [ngClass]="getStatusClass(distributeur.status)">
+                  {{ distributeur.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="distributeur-location">
+            <mat-icon class="location-icon">location_on</mat-icon>
+            <span>{{ distributeur.location }}</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Pagination -->
+      <div class="pagination">
+        <button 
+          class="page-btn" 
+          [disabled]="currentPage === 1"
+          (click)="previousPage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        
+        <button 
+          class="page-btn" 
+          *ngFor="let page of getPageNumbers()"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+        
+        <button 
+          class="page-btn"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Carte avec marqueurs -->
+    <div class="map-section">
+      <div class="map-container">
+        <!-- Map Background -->
+        <div class="map-background">
+          <svg class="map-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fond de carte stylisé -->
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" stroke-width="0.5" opacity="0.3"/>
+              </pattern>
+            </defs>
+            
+            <!-- Grille de fond -->
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            
+            <!-- Routes stylisées -->
+            <g class="roads">
+              <path d="M 100 100 Q 200 120 300 100 Q 400 80 500 120 Q 600 140 700 100" 
+                    stroke="#d1d5db" stroke-width="3" fill="none" opacity="0.6"/>
+              <!-- autres routes -->
+            </g>
+          </svg>
+        </div>
+  
+        <!-- Marqueurs des distributeurs -->
+        <div class="map-markers">
+          <div 
+            class="map-marker" 
+            *ngFor="let distributeur of distributeurs"
+            [style.left.px]="distributeur.mapPosition.x"
+            [style.top.px]="distributeur.mapPosition.y"
+            [class.selected]="selectedDistributeur?.id === distributeur.id"
+            [class.active]="distributeur.status === 'Actif'"
+            [class.maintenance]="distributeur.status === 'Maintenance'"
+            [class.panne]="distributeur.status === 'En panne'"
+            (click)="selectDistributeur(distributeur)">
+            
+            <!-- Tooltip -->
+            <div class="marker-tooltip">
+              <mat-icon>phone_android</mat-icon>
+              <span>{{ distributeur.code }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Légende -->
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-marker active"></div>
+          <span>Actif</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-marker maintenance"></div>
+          <span>Maintenance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-marker panne"></div>
+          <span>En panne</span>
+        </div>
+      </div>
+    </div>
+  </div>

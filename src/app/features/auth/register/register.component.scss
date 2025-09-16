@@ -37,11 +37,15 @@ body::before {
   max-width: 600px;
   position: relative;
   z-index: 1;
+
+  /* centrage */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 27%;
+  justify-content: center;  /* centre horizontalement */
+  align-items: center;      /* centre verticalement */
+
+  margin: 0 auto;           /* supprime margin-left et centre si largeur fixe */
 }
+
 
 .register-card {
   background: transparent;
