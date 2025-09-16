@@ -1,0 +1,56 @@
+<div class="container">
+    <nav class="sidebar">
+      <div class="logo">
+        <mat-icon>water_drop</mat-icon>
+        Waterflow
+      </div>
+      <a routerLink="/dashboard/overview" class="nav-item" routerLinkActive="active">
+        <mat-icon>grid_view</mat-icon>
+        Dashboard
+      </a>
+      <a routerLink="/dashboard/distributeurs" class="nav-item" routerLinkActive="active">
+        <mat-icon>phone_android</mat-icon>
+        Distributeurs
+      </a>
+      <a routerLink="/dashboard/revenu" class="nav-item" routerLinkActive="active">
+        <mat-icon>account_balance_wallet</mat-icon>
+        Revenu
+      </a>
+      <a routerLink="/dashboard/maintenance" class="nav-item" routerLinkActive="active">
+        <mat-icon>build_circle</mat-icon>
+        Maintenance & suivi
+      </a>
+      <a routerLink="/dashboard/utilisateurs" class="nav-item" routerLinkActive="active">
+        <mat-icon>people_outline</mat-icon>
+        Utilisateurs
+      </a>
+      <a routerLink="/dashboard/rapports" class="nav-item" routerLinkActive="active">
+        <mat-icon>description</mat-icon>
+        Rapports
+      </a>
+      <a routerLink="/dashboard/parametres" class="nav-item" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        Paramètres
+      </a>
+    </nav>
+  
+    <main class="main-content">
+      <header class="header">
+        <h1>{{ title }}</h1>
+        <div class="user-info">
+          <button class="notification" (click)="onNotificationClick()">
+            <mat-icon>notifications_none</mat-icon>
+          </button>
+          <div class="user-avatar" (click)="onUserProfileClick()">AN</div>
+          <div class="user-details">
+            <h3>Anta Niang</h3>
+            <p>Administrateur</p>
+          </div>
+        </div>
+      </header>
+  
+      <div class="router-content">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
