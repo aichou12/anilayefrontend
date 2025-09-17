@@ -32,8 +32,13 @@ export const routes: Routes = [
       },
       {
         path: 'revenu',
-        loadComponent: () => import('./features/dashboard/revenu/revenu.component').then(m => m.RevenuComponent), // ✅ Correction ici
+        loadComponent: () => import('./features/dashboard/revenu/revenu.component').then(m => m.RevenuComponent), 
         title: 'Revenu - Waterflow'
+      },
+      {
+        path: 'maintenance',
+        loadComponent: () => import('./features/dashboard/maintenance-suivi/maintenance-suivi.component').then(m => m.MaintenanceSuiviComponent),
+        title: 'Maintenant et Suivi - Waterflow'
       }
     ]
   },

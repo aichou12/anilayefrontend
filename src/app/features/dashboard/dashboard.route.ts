@@ -20,5 +20,11 @@ export const dashboardRoutes: Routes = [
     path: 'revenu',
     loadComponent: () => import('./revenu/revenu.component').then(m => m.RevenuComponent),
     title: 'Revenu - Waterflow'
-  }
+  },
+  {
+    path: 'revenu',
+    loadComponent: () => import('./maintenance-suivi/maintenance-suivi.component').then(m => m.MaintenanceSuiviComponent),
+    title: 'Maintenance et Suivi - Waterflow'
+  },
+  
 ];

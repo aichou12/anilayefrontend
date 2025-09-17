@@ -1,1 +1,82 @@
-<p>revenu works!</p>
+<!-- Filters -->
+<div class="filters">
+    <span class="filter-label">Filtrer par :</span>
+    <select class="filter-select">
+      <option>Régions</option>
+    </select>
+    <select class="filter-select">
+      <option>Périodes</option>
+    </select>
+    <select class="filter-select">
+      <option>Types</option>
+    </select>
+    <select class="filter-select">
+      <option>Statut</option>
+    </select>
+  </div>
+  
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+    <div class="chart-container">
+      <div class="chart-title">Courbe d'évolution des revenus (en FCFA)</div>
+      <div class="chart-wrapper">
+        <canvas #revenueChart></canvas>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">Volume des transactions</div>
+      <div class="chart-wrapper">
+        <canvas #transactionChart></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom Section -->
+  <div class="bottom-section">
+    <div class="transactions-section">
+      <div class="section-header">
+        <div class="section-title">Liste des transactions</div>
+        <div class="search-container">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" class="search-input" placeholder="Rechercher un distributeur">
+          <button class="search-btn">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="transaction-table">
+        <div class="table-header">
+          <div>ID</div>
+          <div>Date</div>
+          <div>Montant</div>
+          <div>Statut</div>
+          <div>Paiement</div>
+        </div>
+        <div class="table-row">
+          <div>TXN-007</div>
+          <div>13/08/2025</div>
+          <div>100.000 FCFA</div>
+          <div><span class="status-badge">Réussi</span></div>
+          <div>Wave</div>
+        </div>
+      </div>
+    </div>
+    <div class="payment-distribution">
+      <div class="section-title">Répartition mode de paiement</div>
+      <div class="distribution-chart">
+        <canvas #pieChart></canvas>
+      </div>
+      <div class="distribution-legend">
+        <div class="legend-item">
+          <div class="legend-color orange"></div>
+          <div class="legend-label">Orange</div>
+          <div class="legend-percentage">30%</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color green"></div>
+          <div class="legend-label">Wave</div>
+          <div class="legend-percentage">30%</div>
+        </div>
+      </div>
+    </div>
+  </div>
