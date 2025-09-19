@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { UserService, Utilisateur } from '../utilisateur/user.service';
 
 interface Distributeur {
   id: string;
@@ -218,16 +219,80 @@ export class DistributeurComponent implements OnInit {
   ];
 
   filteredDistributeurs: Distributeur[] = [];
+  
+showPopup = false;
+  interventionName = '';
+  technician = '';
+  utilisateurs: Utilisateur[] = [];
+  technicianId: number | null = null;
 
+
+  constructor(private userService: UserService) {}
   ngOnInit(): void {
     this.filteredDistributeurs = this.distributeurs;
     this.calculateTotalPages();
     
     // Sélectionner le premier distributeur par défaut
-    if (this.distributeurs.length > 0) {
-      this.selectedDistributeur = this.distributeurs[0];
-    }
+  
+   this.userService.getAllUsers().subscribe({
+      next: (data) => this.utilisateurs = data,
+      error: (err) => console.error('Erreur de chargement utilisateurs', err)
+    });
+    
   }
+
+
+
+
+
+  demanderIntervention(distributeur: any) {
+    this.selectedDistributeur = distributeur;
+    this.showPopup = true;
+  }
+
+  fermerPopup() {
+    this.showPopup = false;
+  }
+
+ successMessage: string = '';  // bien déclarée ici
+
+  ajouterTaches() {
+    console.log('Nouvelle tâche :', {
+      distributeur: this.selectedDistributeur,
+      nom: this.interventionName,
+      technicien: this.technician
+    });
+
+    this.successMessage = 'Tâche affectée avec succès !';
+
+    this.interventionName = '';
+    this.technician = '';
+    this.fermerPopup();
+
+    setTimeout(() => this.successMessage = '', 3000);
+  }
+
+ ajouterTache() {
+  console.log('Nouvelle tâche :', {
+    distributeur: this.selectedDistributeur,
+    nom: this.interventionName,
+    technicien: this.technician
+  });
+
+  // Message de succès
+  this.successMessage = 'Tâche affectée avec succès !';
+
+  // Reset des champs
+  this.interventionName = '';
+  this.technician = '';
+
+  // Fermer le popup après 1 seconde pour que le message soit visible
+  setTimeout(() => {
+    this.fermerPopup();
+    this.successMessage = '';
+  }, 1000);
+}
+
 
   onSearch(): void {
     if (!this.searchTerm.trim()) {
@@ -245,26 +310,37 @@ export class DistributeurComponent implements OnInit {
     this.calculateTotalPages();
   }
 
-  selectDistributeur(distributeur: Distributeur): void {
+selectDistributeur(distributeur: any) {
+  if (this.selectedDistributeur && this.selectedDistributeur.id === distributeur.id) {
+    // si on reclique sur le même -> fermer
+    this.selectedDistributeur = null;
+  } else {
+    // sinon afficher
     this.selectedDistributeur = distributeur;
   }
+}
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'Actif':
-        return 'actif';
-      case 'Maintenance':
-        return 'maintenance';
-      case 'En panne':
-        return 'panne';
-      default:
-        return '';
-    }
+getStatusClass(status: string) {
+  switch (status) {
+    case 'Actif': return 'Actif';
+    case 'Maintenance': return 'Maintenance';
+    case 'Panne': return 'Panne';
+    default: return '';
   }
+}
 
   toggleFilter(): void {
     this.showFilter = !this.showFilter;
   }
+
+
+
+
+
+
+
+
+
 
   // Méthodes de pagination
   calculateTotalPages(): void {

@@ -8,8 +8,13 @@ export interface Distributeur {
   id: number;
   nom: string;
   localisation: string;
-  etatFiltre: string;
+  etatFiltre?: string;
   actif: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  filtres?: any[]; // ou définir un type Filtre si tu veux récupérer les filtres
+   mapPosition?: { x: number; y: number };
+  coordinates?: { lat: number; lng: number };
 }
 
 @Injectable({
@@ -17,6 +22,7 @@ export interface Distributeur {
 })
 export class DistributeurService {
 private apiUrl = `${environment.apiUrl}/distributeurs`;
+
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
@@ -57,4 +63,6 @@ private apiUrl = `${environment.apiUrl}/distributeurs`;
       headers: this.getAuthHeaders()
     });
   }
+
+ 
 }

@@ -45,6 +45,8 @@
           </div>
         </div>
       </div>
+      <!-- Détails du distributeur sélectionné -->
+
   
       <!-- Pagination -->
       <div class="pagination">
@@ -118,7 +120,74 @@
           </div>
         </div>
       </div>
-  
+ 
+<!-- Détails du distributeur sélectionné -->
+
+
+ 
+
+
+
+  <div class="distributeur-details-card" *ngIf="selectedDistributeur">
+  <div class="header">
+    <mat-icon class="distributeur-icon">tap_and_play</mat-icon>
+    <h3>{{ selectedDistributeur.code }}</h3>
+    <span class="status-badge" [ngClass]="getStatusClass(selectedDistributeur.status)">
+      {{ selectedDistributeur.status }}
+    </span>
+  </div>
+
+  <div class="details">
+     <p><strong>Code :</strong> {{ selectedDistributeur.code }}</p>
+  <p><strong>Localisation :</strong> {{ selectedDistributeur.location }}</p>
+  <p><strong>Status :</strong> {{ selectedDistributeur.status }}</p>
+  <p><strong>Dernière maintenance :</strong> {{ selectedDistributeur.lastMaintenance | date }}</p>
+ </div>
+
+  <button class="action-btn" (click)="demanderIntervention(selectedDistributeur)">
+    Demander une intervention
+    <mat-icon>build</mat-icon>
+  </button>
+</div>
+
+<!-- ✅ Popup Intervention -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="fermerPopup()">
+  <div class="popup-card" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="fermerPopup()">✕</button>
+
+    <label class="field-label">Nom de l’intervention</label>
+    <input class="field-input"
+           type="text"
+           [(ngModel)]="interventionName"
+           placeholder="Entrer le nom" />
+
+   
+   <label class="field-label">Assigner à</label>
+<div class="select-wrapper">
+  <select class="field-select" [(ngModel)]="technicianId">
+  <option [ngValue]="null">Choisir un technicien</option>
+  <option *ngFor="let user of utilisateurs" [ngValue]="user.id">
+    {{ user.prenom }} {{ user.nom }}
+  </option>
+</select>
+
+  <span class="select-arrow">▾</span>
+</div>
+
+
+
+<div *ngIf="successMessage" class="success-msg">{{ successMessage }}</div>
+
+<div class="popup-actions">
+  <button class="action-btn" (click)="ajouterTache()">Ajouter cette tâche</button>
+</div>
+
+
+
+  </div>
+</div>
+
+
       <!-- Légende -->
       <div class="map-legend">
         <div class="legend-item">
@@ -136,3 +205,205 @@
       </div>
     </div>
   </div>
+  <style>
+    .distributeur-details-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 450px;
+  margin-top: 12px;
+  font-family: "Inter", sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.distributeur-icon {
+  font-size: 32px;
+  margin-right: 8px;
+  color: #374151;
+}
+
+h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.status-badge.Actif {
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.status-badge.Maintenance {
+  color: #f9a825;
+  border-color: #f9a825;
+}
+
+.status-badge.Panne {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.details p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  width: 100%;
+  font-weight: 500;
+}
+
+.action-btn mat-icon {
+  font-size: 18px;
+}
+/* overlay */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+/* carte */
+.popup-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 22px 20px;
+  width: 360px;
+  max-width: 90%;
+  position: relative;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+/* bouton fermer */
+.close-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: none;
+  border: none;
+  color: #e11d48;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* champs */
+.field-label {
+  display: block;
+  margin: 10px 0 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.field-input, .field-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+}
+
+/* select wrapper */
+.select-wrapper {
+  position: relative;
+}
+.select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* bouton action */
+.popup-actions {
+  margin-top: 10px;
+}
+.popup-actions .action-btn {
+  width: 100%;
+  background-color: #1976d2;
+  border: none;
+  border-radius: 999px;
+  padding: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+/* ✅ Empêcher tout débordement */
+.popup-card,
+.popup-card * {
+  box-sizing: border-box;
+}
+
+/* ✅ Amélioration du focus sur les champs */
+.field-input, 
+.field-select {
+  transition: all 0.2s ease-in-out;
+}
+
+.field-input:focus,
+.field-select:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(25,118,210,0.2);
+}
+
+/* ✅ Amélioration du bouton */
+.popup-actions .action-btn {
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.popup-actions .action-btn:hover {
+  background-color: #1565c0;
+}
+
+.popup-actions .action-btn:active {
+  transform: scale(0.97);
+}
+.success-msg {
+  color: white;
+  background-color: green;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+
+  </style>
