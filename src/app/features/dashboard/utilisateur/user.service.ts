@@ -16,10 +16,11 @@ export interface Utilisateur {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/utilisateurs`;
+  private apiUrl = `${environment.apiUrl}/utilisateurs/maintenanciers`;
   constructor(private http: HttpClient) {}
 
-  getAllUsers(): Observable<Utilisateur[]> {
+ 
+getAllUsers(): Observable<Utilisateur[]> {
     return this.http.get<Utilisateur[]>(this.apiUrl);
-  }
+}
 }

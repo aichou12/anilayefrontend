@@ -235,9 +235,13 @@ showPopup = false;
     // Sélectionner le premier distributeur par défaut
   
    this.userService.getAllUsers().subscribe({
-      next: (data) => this.utilisateurs = data,
-      error: (err) => console.error('Erreur de chargement utilisateurs', err)
-    });
+  next: (data) => {
+    this.utilisateurs = data; // ce seront uniquement les maintenanciers
+    console.log('Maintenancier:', this.utilisateurs);
+  },
+  error: (err) => console.error('Erreur lors du chargement des maintenanciers', err)
+});
+
     
   }
 
