@@ -21,7 +21,7 @@ export class DashboardService {
   private currentUserSubject = new BehaviorSubject<Utilisateur | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-private apiUrl = `${environment.apiUrl}/distributeurs`;
+  private apiUrl = 'http://localhost:8081/api/anilaye/v1/distributeurs';
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
