@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenService } from '../../../core/services/token.service';
+import { environment } from '../../../../environments/environment';
 
 
 export interface Utilisateur {
@@ -20,7 +21,7 @@ export class DashboardService {
   private currentUserSubject = new BehaviorSubject<Utilisateur | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  private apiUrl = 'http://localhost:8081/api/anilaye/v1/distributeurs';
+private apiUrl = `${environment.apiUrl}/distributeurs`;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
