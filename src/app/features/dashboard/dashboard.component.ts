@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DashboardService } from '../../layout/sidebar/menu-dashboard/dashboard.service';
 
+
 interface StatCard {
   title: string;
   value: number;
@@ -33,12 +34,11 @@ export class DashboardComponent implements OnInit {
   selectedPeriod: string = '';
   selectedType: string = '';
   selectedStatus: string = '';
-
+actifs: number = 0;
+  inactifs: number = 0;
+  alertes: number = 0;
   stats: StatCard[] = [
-    { title: 'Distributeurs actifs', value: 120, change: 0.5 },
-    { title: 'Distributeurs inactifs', value: 0, change: -0.5 },
-    { title: 'Alertes (en cours)', value: 2, change: 0.5 }
-  ];
+     ];
 
   chartPoints: ChartPoint[] = [
     { x: 20, y: 150 }, { x: 120, y: 160 }, { x: 200, y: 130 }, 
@@ -63,23 +63,51 @@ export class DashboardComponent implements OnInit {
     { name: 'Dakar', values: [34, 40, 41, 40, 34, 40, 41] }
   ];
 
+ 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.dashboardService.setTitle('Dashboard');
     this.loadDashboardData();
+     this.chargerCompteDistributeurs();
   }
+chargerCompteDistributeurs() {
+  this.dashboardService.getActifsCount().subscribe(count => {
+    this.actifs = count;
+    this.updateStats();
+  });
+
+  this.dashboardService.getInactifsCount().subscribe(count => {
+    this.inactifs = count;
+    this.updateStats();
+  });
+
+  this.dashboardService.getAlertesCount().subscribe(count => {
+    this.alertes = count; // ajouter un champ alertes: number = 0;
+    this.updateStats();
+  });
+}
+
+private updateStats(): void {
+  this.stats = [
+    { title: 'Distributeurs actifs', value: this.actifs, change: +0.5 },
+    { title: 'Distributeurs inactifs', value: this.inactifs, change: -0.5 },
+    { title: 'Alertes (en cours)', value: this.alertes, change: +0.5 }
+  ];
+}
+
+
 
   private loadDashboardData(): void {
     console.log('Loading dashboard data...');
     this.updateStats();
   }
 
-  private updateStats(): void {
+ /*  private updateStats(): void {
     if (this.selectedRegion || this.selectedPeriod || this.selectedType || this.selectedStatus) {
       console.log('Updating stats with filters');
     }
-  }
+  } */
 
   onFilterChange(): void {
     console.log('Filters changed');

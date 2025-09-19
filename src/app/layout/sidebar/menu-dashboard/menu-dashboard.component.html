@@ -41,11 +41,28 @@
           <button class="notification" (click)="onNotificationClick()">
             <mat-icon>notifications_none</mat-icon>
           </button>
-          <div class="user-avatar" (click)="onUserProfileClick()">AN</div>
-          <div class="user-details">
-            <h3>Anta Niang</h3>
-            <p>Administrateur</p>
-          </div>
+   <div class="user-container">
+  <!-- Avatar cliquable -->
+  <div class="user-avatar" (click)="toggleDropdown()">
+    {{ getInitials(user) }}
+  </div>
+
+  <!-- Dropdown -->
+  <div class="dropdown" *ngIf="isDropdownOpen">
+    <button class="dropdown-item" (click)="logout()">Se déconnecter</button>
+  </div>
+</div>
+
+
+<!-- Optionnel : afficher nom et rôle -->
+<div class="user-details" *ngIf="user">
+  <h3>{{ user.prenom }} {{ user.nom }}</h3>
+  <p>{{ user.role }}</p>
+</div>
+
+
+ 
+
         </div>
       </header>
   
@@ -54,3 +71,49 @@
       </div>
     </main>
   </div>
+  <style>
+  .user-container {
+  position: relative;
+  display: inline-block;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+}
+
+.dropdown {
+  position: absolute;
+  top: 50px; /* en dessous de l'avatar */
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 1000;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+
+</style>

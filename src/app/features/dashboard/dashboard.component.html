@@ -37,49 +37,71 @@
       </div>
     </div>
   
-    <div class="stats-grid">
-      <div class="stat-card" *ngFor="let stat of stats">
-        <div class="stat-title">{{ stat.title }}</div>
-        <div class="stat-value">{{ stat.value }}</div>
-        <div class="stat-change" [ngClass]="{'positive': stat.change > 0, 'negative': stat.change < 0}">
-          <mat-icon>{{ stat.change > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
-          {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
-        </div>
-      </div>
+<div class="stats-grid">
+  <div class="stat-card" *ngFor="let stat of stats">
+    <div class="stat-title">{{ stat.title }}</div>
+    <div class="stat-value-container">
+      <span class="stat-value">{{ stat.value }}</span>
+      <span class="stat-change"
+            [ngClass]="{
+              'blue': stat.title === 'Distributeurs actifs' || stat.title === 'Distributeurs inactifs',
+              'red': stat.title === 'Alertes (en cours)'
+            }">
+        {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
+        <mat-icon class="trend-icon">{{ stat.change > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+      </span>
     </div>
-  
+  </div>
+</div>
+
+
     <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">Volume d'eau distribué</div>
-        <div class="chart-container">
-          <svg class="line-chart" viewBox="0 0 400 200">
-            <defs>
-              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
-              </linearGradient>
-            </defs>
-            <path d="M 20 150 Q 80 180 120 160 Q 160 140 200 130 Q 240 120 280 100 Q 320 80 380 50" 
-                  stroke="url(#lineGradient)" stroke-width="3" fill="none"/>
-            <circle *ngFor="let point of chartPoints" 
-                    [attr.cx]="point.x" 
-                    [attr.cy]="point.y" 
-                    r="4" 
-                    fill="#3b82f6"
-                    class="chart-point"/>
-            
-            <text *ngFor="let day of days; let i = index" 
-                  [attr.x]="30 + (i * 70)" 
-                  y="190" 
-                  font-size="12" 
-                  fill="#6b7280">{{ day }}</text>
-            
-            <text x="5" y="160" font-size="12" fill="#6b7280">100L</text>
-            <text x="5" y="110" font-size="12" fill="#6b7280">200L</text>
-            <text x="5" y="60" font-size="12" fill="#6b7280">300L</text>
-          </svg>
-        </div>
-      </div>
+     <div class="chart-card">
+  <div class="chart-title">Volume d'eau distribué</div>
+  <div class="chart-container">
+    <svg class="line-chart" viewBox="0 0 400 200">
+      <defs>
+        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+          <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+        </linearGradient>
+      </defs>
+
+      <!-- Area sous la courbe -->
+      <path d="M 20 150 Q 80 180 120 160 Q 160 140 200 130 Q 240 120 280 100 Q 320 80 380 50 L 380 200 L 20 200 Z" 
+            fill="url(#areaGradient)" />
+
+      <!-- Ligne de la courbe -->
+      <path d="M 20 150 Q 80 180 120 160 Q 160 140 200 130 Q 240 120 280 100 Q 320 80 380 50" 
+            stroke="url(#lineGradient)" stroke-width="3" fill="none"/>
+
+      <!-- Points -->
+      <circle *ngFor="let point of chartPoints" 
+              [attr.cx]="point.x" 
+              [attr.cy]="point.y" 
+              r="4" 
+              fill="#3b82f6"
+              class="chart-point"/>
+
+      <!-- Labels X -->
+      <text *ngFor="let day of days; let i = index" 
+            [attr.x]="30 + (i * 70)" 
+            y="190" 
+            font-size="12" 
+            fill="#6b7280">{{ day }}</text>
+
+      <!-- Labels Y -->
+      <text x="5" y="160" font-size="12" fill="#6b7280">100L</text>
+      <text x="5" y="110" font-size="12" fill="#6b7280">200L</text>
+      <text x="5" y="60" font-size="12" fill="#6b7280">300L</text>
+    </svg>
+  </div>
+</div>
+
   
       <div class="chart-card">
         <div class="chart-title">Heatmap taux d'utilisation</div>
@@ -112,3 +134,58 @@
       </div>
     </div>
   </div>
+
+  <style>
+  .stats-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  flex: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+ 
+}
+
+.stat-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.stat-value-container {
+  display: flex;
+  justify-content: space-between; /* espace entre les deux éléments */
+  align-items: center;
+  width: 100%; /* pour prendre toute la largeur de la carte */
+}
+
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.stat-change {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* un peu plus d'espace avec la flèche si elle est plus grosse */
+}
+
+.trend-icon {
+  font-size: 24px; /* flèche plus grande */
+}
+
+
+.blue {
+  color: #007bff;
+}
+
+.red {
+  color: #dc3545;
+}
+
+</style>

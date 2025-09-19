@@ -5,4 +5,6 @@ export interface AuthResponse {
     token: string;
     email: string;
     role: string;
+    nom: string;    // <-- ajouté
+  prenom: string;
   }

@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { AuthRequest } from '../../../core/models/auth-request.model';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DashboardService } from '../../../layout/sidebar/menu-dashboard/dashboard.service';
 
 /**
  * Composant pour la page de connexion
@@ -25,6 +26,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private dashboardService: DashboardService,
     private router: Router,
     private toastr: ToastrService
   ) {
@@ -46,62 +48,66 @@ export class LoginComponent {
         password: this.loginForm.get('password')?.value
       };
       
-      this.authService.login(authRequest).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          this.toastr.success('Connexion réussie!', 'Bienvenue', {
-            timeOut: 3000,
-            positionClass: 'toast-top-right',
-            progressBar: true,
-            closeButton: true
-          });
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isLoading = false;
-          
-          console.log('Erreur complète:', error);
-          
-          // Extraction du message d'erreur depuis la réponse du backend
-          let errorMessage = 'Email ou mot de passe incorrect';
-          
-          if (error.error && typeof error.error === 'object') {
-            // Si l'erreur est un objet avec une propriété message
-            errorMessage = error.error.message || errorMessage;
-          } else if (typeof error.error === 'string') {
-            // Si l'erreur est une chaîne de caractères
-            errorMessage = error.error;
-          }
-          
-          // Gestion des erreurs spécifiques
-          if (error.status === 401) {
-            this.toastr.error(errorMessage, 'Erreur d\'authentification', {
-              timeOut: 5000,
-              positionClass: 'toast-top-right',
-              progressBar: true,
-              closeButton: true
-            });
-          } else if (error.status === 0) {
-            this.toastr.error('Impossible de se connecter au serveur', 'Erreur réseau', {
-              timeOut: 5000,
-              positionClass: 'toast-top-right',
-              progressBar: true,
-              closeButton: true
-            });
-          } else {
-            this.toastr.error(
-              errorMessage, 
-              'Erreur', 
-              {
-                timeOut: 5000,
-                positionClass: 'toast-top-right',
-                progressBar: true,
-                closeButton: true
-              }
-            );
-          }
-        }
+     this.authService.login(authRequest).subscribe({
+  next: (response) => {
+    this.isLoading = false;
+
+    // Stocker l'utilisateur connecté dans le DashboardService
+    this.dashboardService.setUser({
+      nom: response.nom,
+      prenom: response.prenom,
+      role: response.role
+    });
+
+    // Affichage d'un toast succès
+    this.toastr.success('Connexion réussie!', 'Bienvenue', {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      progressBar: true,
+      closeButton: true
+    });
+
+    // Redirection vers le dashboard
+    this.router.navigate(['/dashboard']);
+  },
+  error: (error: HttpErrorResponse) => {
+    this.isLoading = false;
+
+    console.log('Erreur complète:', error);
+
+    let errorMessage = 'Email ou mot de passe incorrect';
+
+    if (error.error && typeof error.error === 'object') {
+      errorMessage = error.error.message || errorMessage;
+    } else if (typeof error.error === 'string') {
+      errorMessage = error.error;
+    }
+
+    if (error.status === 401) {
+      this.toastr.error(errorMessage, 'Erreur d\'authentification', {
+        timeOut: 5000,
+        positionClass: 'toast-top-right',
+        progressBar: true,
+        closeButton: true
       });
+    } else if (error.status === 0) {
+      this.toastr.error('Impossible de se connecter au serveur', 'Erreur réseau', {
+        timeOut: 5000,
+        positionClass: 'toast-top-right',
+        progressBar: true,
+        closeButton: true
+      });
+    } else {
+      this.toastr.error(errorMessage, 'Erreur', {
+        timeOut: 5000,
+        positionClass: 'toast-top-right',
+        progressBar: true,
+        closeButton: true
+      });
+    }
+  }
+});
+
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs de validation
       Object.keys(this.loginForm.controls).forEach(key => {
