@@ -1,1 +1,90 @@
-<p>maintenance-suivi works!</p>
+<!-- Filters and Add Task Button -->
+<div class="header-section">
+    <div class="filters">
+      <span class="filter-label">Filtrer par :</span>
+      <select class="filter-select">
+        <option>Régions</option>
+      </select>
+      <select class="filter-select">
+        <option>Périodes</option>
+      </select>
+      <select class="filter-select">
+        <option>Types</option>
+      </select>
+      <select class="filter-select">
+        <option>Statut</option>
+      </select>
+    </div>
+    
+    <button class="add-task-btn">
+      <mat-icon>add</mat-icon>
+      Ajouter une tâche
+    </button>
+  </div>
+  
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total des tâches</div>
+      <div class="stat-number">120</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-title">Tâches complètes</div>
+      <div class="stat-number">119</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-title">Tâches en attente</div>
+      <div class="stat-number">1</div>
+    </div>
+  </div>
+  
+  <!-- Tasks Section -->
+  <div class="tasks-section">
+    <div class="section-header">
+      <div class="section-title">Toutes les tâches</div>
+      <div class="search-container">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" class="search-input" placeholder="Rechercher un distributeur">
+        <button class="search-btn">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Tasks Table -->
+    <div class="tasks-table">
+      <div class="table-header">
+        <div class="col-name">Nom</div>
+        <div class="col-assigned">Assigner à</div>
+        <div class="col-date">Date</div>
+        <div class="col-status">Statut</div>
+        <div class="col-actions">Actions</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="col-name">Maintenance de thies</div>
+        <div class="col-assigned">Amadou Samb</div>
+        <div class="col-date">13/08/2025</div>
+        <div class="col-status">
+          <span class="status-badge completed">Terminé</span>
+        </div>
+        <div class="col-actions">
+          <button class="details-btn">Voir détails</button>
+        </div>
+      </div>
+      
+      <div class="table-row">
+        <div class="col-name">Maintenance de Dakar</div>
+        <div class="col-assigned">Serigne moustapha sy</div>
+        <div class="col-date">13/08/2025</div>
+        <div class="col-status">
+          <span class="status-badge pending">En attente</span>
+        </div>
+        <div class="col-actions">
+          <button class="details-btn">Voir détails</button>
+        </div>
+      </div>
+    </div>
+  </div>
