@@ -4,15 +4,31 @@
       <span class="filter-label">Filtrer par :</span>
       <select class="filter-select">
         <option>Régions</option>
+        <option value="dakar">Dakar</option>
+            <option value="thies">Thiès</option>
+            <option value="saint-louis">Saint-Louis</option>
+          
       </select>
       <select class="filter-select">
         <option>Périodes</option>
+        <option value="today">Aujourd'hui</option>
+            <option value="week">Cette semaine</option>
+            <option value="month">Ce mois</option>
+        
       </select>
       <select class="filter-select">
         <option>Types</option>
+        <option value="active">Actif</option>
+            <option value="inactive">Inactif</option>
+            <option value="maintenance">En maintenance</option>
+         
       </select>
       <select class="filter-select">
         <option>Statut</option>
+         <option value="operational">Opérationnel</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="offline">Hors ligne</option>
+       
       </select>
     </div>
     
@@ -24,21 +40,22 @@
   
   <!-- Statistics Cards -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-title">Total des tâches</div>
-      <div class="stat-number">120</div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-title">Tâches complètes</div>
-      <div class="stat-number">119</div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-title">Tâches en attente</div>
-      <div class="stat-number">1</div>
-    </div>
+  <div class="stat-card">
+    <div class="stat-title">Total des tâches</div>
+    <div class="stat-number">{{ totalTasks }}</div>
   </div>
+  
+  <div class="stat-card">
+    <div class="stat-title">Tâches complètes</div>
+    <div class="stat-number">{{ completedTasks }}</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-title">Tâches en attente</div>
+    <div class="stat-number">{{ pendingTasks }}</div>
+  </div>
+</div>
+
   
   <!-- Tasks Section -->
   <div class="tasks-section">
@@ -53,38 +70,102 @@
       </div>
     </div>
   
-    <!-- Tasks Table -->
-    <div class="tasks-table">
-      <div class="table-header">
-        <div class="col-name">Nom</div>
-        <div class="col-assigned">Assigner à</div>
-        <div class="col-date">Date</div>
-        <div class="col-status">Statut</div>
-        <div class="col-actions">Actions</div>
-      </div>
-      
-      <div class="table-row">
-        <div class="col-name">Maintenance de thies</div>
-        <div class="col-assigned">Amadou Samb</div>
-        <div class="col-date">13/08/2025</div>
-        <div class="col-status">
-          <span class="status-badge completed">Terminé</span>
-        </div>
-        <div class="col-actions">
-          <button class="details-btn">Voir détails</button>
-        </div>
-      </div>
-      
-      <div class="table-row">
-        <div class="col-name">Maintenance de Dakar</div>
-        <div class="col-assigned">Serigne moustapha sy</div>
-        <div class="col-date">13/08/2025</div>
-        <div class="col-status">
-          <span class="status-badge pending">En attente</span>
-        </div>
-        <div class="col-actions">
-          <button class="details-btn">Voir détails</button>
-        </div>
-      </div>
+   <div class="tasks-table">
+  <div class="table-header">
+    <div class="col-name">Description</div>
+    <div class="col-assigned">Distributeur</div>
+    <div class="col-date">Date</div>
+    <div class="col-status">Statut</div>
+  </div>
+
+  <div class="table-row" *ngFor="let maintenance of paginatedMaintenances">
+    <div class="col-name">{{ maintenance.description }}</div>
+    <div class="col-assigned">{{ maintenance.distributeur?.nom || 'N/A' }}</div>
+    <div class="col-date">{{ maintenance.dateMaintenance | date:'dd/MM/yyyy HH:mm' }}</div>
+    <div class="col-status">
+      <span class="status-badge" [ngClass]="maintenance.etatApresMaintenance.toLowerCase()">
+        {{ maintenance.etatApresMaintenance }}
+      </span>
     </div>
   </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+  <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">&laquo;</button>
+
+  <button *ngFor="let page of visiblePages"
+          (click)="goToPage(page)"
+          [class.active]="currentPage === page">
+    {{ page }}
+  </button>
+
+  <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">&raquo;</button>
+</div>
+
+<style>
+  /* Styles des badges de statut */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+/* Couleurs selon l'état */
+.disponible {
+  background-color: #4caf50; /* vert */
+}
+
+.en_maintenance {
+  background-color: #ff9800; /* orange */
+}
+
+.en_panne {
+  background-color: #f44336; /* rouge */
+}
+
+  /* Container de pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 5px;
+  font-family: Arial, sans-serif;
+}
+
+/* Boutons de pagination */
+.pagination button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 40px;
+}
+
+/* Bouton actif */
+.pagination button.active {
+  background-color: #3f51b5; /* couleur Material blue */
+  color: white;
+  font-weight: bold;
+  border-color: #3f51b5;
+}
+
+/* Hover effect */
+.pagination button:hover:not(.active) {
+  background-color: #e0e0e0;
+  border-color: #bbb;
+}
+
+/* Désactivé */
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+</style>
