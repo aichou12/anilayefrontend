@@ -22,9 +22,14 @@ export const dashboardRoutes: Routes = [
     title: 'Revenu - Waterflow'
   },
   {
-    path: 'revenu',
+    path: 'maintenance',
     loadComponent: () => import('./maintenance-suivi/maintenance-suivi.component').then(m => m.MaintenanceSuiviComponent),
     title: 'Maintenance et Suivi - Waterflow'
+  },
+  {
+    path: 'utilisateurs',
+    loadComponent: () => import('./utilisateur/utilisateur.component').then(m => m.UtilisateurComponent),
+    title: 'Utilisateur - Waterflow'
   },
   
 ];

@@ -39,6 +39,11 @@ export const routes: Routes = [
         path: 'maintenance',
         loadComponent: () => import('./features/dashboard/maintenance-suivi/maintenance-suivi.component').then(m => m.MaintenanceSuiviComponent),
         title: 'Maintenant et Suivi - Waterflow'
+      },
+      {
+        path: 'utilisateurs',
+        loadComponent: () => import('./features/dashboard/utilisateur/utilisateur.component').then(m => m.UtilisateurComponent),
+        title: 'Utilisateur - Waterflow'
       }
     ]
   },
