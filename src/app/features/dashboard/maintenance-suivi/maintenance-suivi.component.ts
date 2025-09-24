@@ -1,215 +1,93 @@
 import { Component, OnInit } from '@angular/core';
+import { Maintenance, MaintenanceService } from './maintenance.service';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-
-interface Task {
-  id: number;
-  name: string;
-  assignedTo: string;
-  date: string;
-  status: 'completed' | 'pending' | 'in-progress' | 'cancelled';
-}
-
-interface TaskStats {
-  totalTasks: number;
-  completedTasks: number;
-  pendingTasks: number;
-}
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-maintenance-suivi',
-  imports: [CommonModule, MatIconModule, FormsModule],
+ selector: 'app-maintenance-suivi',
   templateUrl: './maintenance-suivi.component.html',
-  styleUrl: './maintenance-suivi.component.scss'
+  styleUrls: ['./maintenance-suivi.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule  // <- IL FAUT L'AJOUTER
+  ]
 })
 export class MaintenanceSuiviComponent implements OnInit {
-  
-  // Properties
+
+  maintenances: Maintenance[] = [];
+  filteredMaintenances: Maintenance[] = [];
+totalTasks = 0;
+  completedTasks = 0; // DISPONIBLE
+  pendingTasks = 0; 
+  // Pagination
+  currentPage = 1;
+  pageSize = 5; // nombre de lignes par page
+  totalPages = 1;
+
+  // Recherche / filtre
   searchTerm: string = '';
-  selectedRegion: string = '';
-  selectedPeriod: string = '';
-  selectedType: string = '';
-  selectedStatus: string = '';
 
-  // Stats
-  taskStats: TaskStats = {
-    totalTasks: 120,
-    completedTasks: 120,
-    pendingTasks: 0
-  };
-
-  // Tasks data
-  tasks: Task[] = [
-    {
-      id: 1,
-      name: 'Maintenance de thies',
-      assignedTo: 'Amadou Samb',
-      date: '13/08/2025',
-      status: 'completed'
-    },
-    {
-      id: 2,
-      name: 'Maintenance de Dakar',
-      assignedTo: 'Serigne moustapha sy',
-      date: '13/08/2025',
-      status: 'pending'
-    }
-  ];
-
-  filteredTasks: Task[] = [];
-
-  // Filter options
-  regions = ['Dakar', 'Thiès', 'Kaolack', 'Saint-Louis'];
-  periods = ['Aujourd\'hui', 'Cette semaine', 'Ce mois', 'Ce trimestre'];
-  types = ['Maintenance préventive', 'Maintenance corrective', 'Installation', 'Réparation'];
-  statuses = ['Tous', 'Terminé', 'En attente', 'En cours', 'Annulé'];
+  constructor(private maintenanceService: MaintenanceService) {}
 
   ngOnInit() {
-    this.filteredTasks = [...this.tasks];
-    this.updateStats();
+    this.loadMaintenances();
+    
   }
 
-  // Add new task
-  onAddTask() {
-    console.log('Ajouter une nouvelle tâche');
-    // Ici vous pouvez ouvrir un modal ou naviguer vers une page de création
+ loadMaintenances() {
+  this.maintenanceService.getAllMaintenances().subscribe({
+    next: (data) => {
+      this.maintenances = data;
+      this.applyFilters();
+      this.calculateStats();  // <-- ici
+    },
+    error: (err) => console.error('Erreur chargement maintenances', err)
+  });
+}
+
+calculateStats() {
+  this.totalTasks = this.maintenances.length;
+  this.completedTasks = this.maintenances.filter(m => m.etatApresMaintenance === 'DISPONIBLE').length;
+  this.pendingTasks = this.maintenances.filter(m => m.etatApresMaintenance !== 'DISPONIBLE').length;
+}
+
+
+  // Filtre simple par description ou distributeur
+  applyFilters() {
+    this.filteredMaintenances = this.maintenances.filter(m =>
+      !this.searchTerm ||
+      m.description.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      (m.distributeur?.nom && m.distributeur.nom.toLowerCase().includes(this.searchTerm.toLowerCase()))
+    );
+
+    this.totalPages = Math.ceil(this.filteredMaintenances.length / this.pageSize);
+    this.currentPage = 1; // reset page à 1 après filtre
   }
 
-  // Search functionality
-  onSearch() {
-    this.applyFilters();
+  // Pagination
+  get paginatedMaintenances(): Maintenance[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredMaintenances.slice(start, start + this.pageSize);
   }
 
-  // Filter change handlers
-  onRegionChange() {
-    this.applyFilters();
+  goToPage(page: number) {
+    if(page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
   }
+get visiblePages(): number[] {
+  const totalToShow = 5; // nombre de pages visibles
+  let start = Math.max(this.currentPage - 2, 1);
+  let end = Math.min(start + totalToShow - 1, this.totalPages);
 
-  onPeriodChange() {
-    this.applyFilters();
-  }
+  // Ajuster start si on est près de la fin
+  start = Math.max(end - totalToShow + 1, 1);
 
-  onTypeChange() {
-    this.applyFilters();
-  }
+  const pages = [];
+  for(let i = start; i <= end; i++) pages.push(i);
+  return pages;
+}
 
-  onStatusChange() {
-    this.applyFilters();
-  }
-
-  // Apply all filters
-  private applyFilters() {
-    this.filteredTasks = this.tasks.filter(task => {
-      const matchesSearch = !this.searchTerm || 
-        task.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        task.assignedTo.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-      const matchesStatus = !this.selectedStatus || 
-        this.selectedStatus === 'Tous' ||
-        this.getStatusLabel(task.status) === this.selectedStatus;
-
-      // Ajouter d'autres filtres selon vos besoins
-      return matchesSearch && matchesStatus;
-    });
-
-    this.updateStats();
-  }
-
-  // Get status label in French
-  getStatusLabel(status: string): string {
-    const statusLabels: { [key: string]: string } = {
-      'completed': 'Terminé',
-      'pending': 'En attente',
-      'in-progress': 'En cours',
-      'cancelled': 'Annulé'
-    };
-    return statusLabels[status] || status;
-  }
-
-  // Get status class for styling
-  getStatusClass(status: string): string {
-    return status;
-  }
-
-  // Update statistics
-  private updateStats() {
-    this.taskStats = {
-      totalTasks: this.filteredTasks.length,
-      completedTasks: this.filteredTasks.filter(t => t.status === 'completed').length,
-      pendingTasks: this.filteredTasks.filter(t => t.status === 'pending').length
-    };
-  }
-
-  // View task details
-  onViewDetails(task: Task) {
-    console.log('Voir détails de la tâche:', task);
-    // Ici vous pouvez ouvrir un modal ou naviguer vers une page de détail
-  }
-
-  // Utility methods
-  formatDate(dateString: string): string {
-    // Format the date if needed
-    return dateString;
-  }
-
-  // Export tasks (bonus feature)
-  onExportTasks() {
-    const csvContent = this.generateCSV();
-    this.downloadCSV(csvContent, 'maintenance-tasks.csv');
-  }
-
-  private generateCSV(): string {
-    const headers = ['Nom', 'Assigné à', 'Date', 'Statut'];
-    const csvData = [headers.join(',')];
-
-    this.filteredTasks.forEach(task => {
-      const row = [
-        `"${task.name}"`,
-        `"${task.assignedTo}"`,
-        task.date,
-        `"${this.getStatusLabel(task.status)}"`
-      ];
-      csvData.push(row.join(','));
-    });
-
-    return csvData.join('\n');
-  }
-
-  private downloadCSV(content: string, filename: string) {
-    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', filename);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
-  // Refresh data
-  onRefresh() {
-    console.log('Actualisation des données...');
-    // Ici vous pouvez recharger les données depuis votre API
-    this.ngOnInit();
-  }
-
-  // Bulk actions (bonus features)
-  onBulkComplete(tasks: Task[]) {
-    tasks.forEach(task => {
-      if (task.status === 'pending') {
-        task.status = 'completed';
-      }
-    });
-    this.updateStats();
-  }
-
-  onBulkDelete(tasks: Task[]) {
-    const taskIds = tasks.map(t => t.id);
-    this.tasks = this.tasks.filter(task => !taskIds.includes(task.id));
-    this.applyFilters();
-  }
 }
