@@ -31,5 +31,10 @@ export const dashboardRoutes: Routes = [
     loadComponent: () => import('./utilisateur/utilisateur.component').then(m => m.UtilisateurComponent),
     title: 'Utilisateur - Waterflow'
   },
+  {
+    path: 'rapports',
+    loadComponent: () => import('./rapports/rapports.component').then(m => m.RapportsComponent),
+    title: 'Rapports - Waterflow'
+  },
   
 ];

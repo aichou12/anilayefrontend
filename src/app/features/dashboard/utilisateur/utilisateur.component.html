@@ -1,49 +1,50 @@
 <div class="utilisateurs-container">
     
-    <div class="tabs-container">
-      <div class="tabs">
-        <button class="tab-button active" (click)="setActiveTab('tous')">Tous</button>
-        <button class="tab-button" (click)="setActiveTab('actif')">Actif</button>
-        <button class="tab-button" (click)="setActiveTab('inactif')">Inactif</button>
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-button active" (click)="setActiveTab('tous')">Tous</button>
+      <button class="tab-button" (click)="setActiveTab('actif')">Actif</button>
+      <button class="tab-button" (click)="setActiveTab('inactif')">Inactif</button>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <div class="section-header">
+      <h2>Tous les utilisateurs</h2>
+      <div class="search-container">
+        <input 
+          type="text" 
+          placeholder="Rechercher un distributeur"
+          class="search-input"
+          [(ngModel)]="searchTerm"
+        >
+        <button class="search-button">
+          <mat-icon>search</mat-icon>
+        </button>
       </div>
     </div>
-  
-    <div class="content-section">
-      <div class="section-header">
-        <h2>Tous les utilisateurs</h2>
-        <div class="search-container">
-          <input 
-            type="text" 
-            placeholder="Rechercher un distributeur"
-            class="search-input"
-            [(ngModel)]="searchTerm"
-          >
-          <button class="search-button">
-            <mat-icon>search</mat-icon>
-          </button>
-        </div>
+
+    <div class="users-table">
+      <div class="table-header">
+        <div class="header-cell">Nom</div>
+        <div class="header-cell">Email</div>
+        <div class="header-cell">Statut</div>
+        <div class="header-cell">Actions</div>
       </div>
-  
-      <div class="users-table">
-        <div class="table-header">
-          <div class="header-cell">Nom</div>
-          <div class="header-cell">Email</div>
-          <div class="header-cell">Statut</div>
-          <div class="header-cell">Actions</div>
+
+      <div class="table-row" *ngFor="let user of filteredUsers">
+        <div class="table-cell">{{ user.nom }}</div>
+        <div class="table-cell">{{ user.email }}</div>
+        <div class="table-cell">
+          <span class="status-badge" [ngClass]="user.statut.toLowerCase()">
+            {{ user.statut }}
+          </span>
         </div>
-  
-        <div class="table-row" *ngFor="let user of filteredUsers">
-          <div class="table-cell">{{ user.nom }}</div>
-          <div class="table-cell">{{ user.email }}</div>
-          <div class="table-cell">
-            <span class="status-badge" [ngClass]="user.statut.toLowerCase()">
-              {{ user.statut }}
-            </span>
-          </div>
-          <div class="table-cell">
-            <button class="action-button">Voir détails</button>
-          </div>
+        <div class="table-cell">
+          <button class="action-button">Voir détails</button>
         </div>
       </div>
     </div>
   </div>
+</div>
+

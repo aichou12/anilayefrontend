@@ -44,6 +44,11 @@ export const routes: Routes = [
         path: 'utilisateurs',
         loadComponent: () => import('./features/dashboard/utilisateur/utilisateur.component').then(m => m.UtilisateurComponent),
         title: 'Utilisateur - Waterflow'
+      },
+      {
+        path: 'rapports',
+        loadComponent: () => import('./features/dashboard/rapport/rapport.component').then(m => m.RapportComponent),
+        title: 'Rapports - Waterflow'
       }
     ]
   },

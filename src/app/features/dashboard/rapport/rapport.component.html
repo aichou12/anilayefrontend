@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapports - Anilaye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            padding: 30px;
+        }
+
+        .rapports-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Filtres */
+        .filters-section {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .filters-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filters-label {
+            font-weight: 500;
+            color: #000;
+            font-size: 16px;
+        }
+
+        .filter-select {
+            padding: 10px 40px 10px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #000;
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            min-width: 160px;
+            font-family: inherit;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .btn-appliquer {
+            padding: 10px 35px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .btn-appliquer:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #fafafa;
+        }
+
+        .data-table th {
+            padding: 18px 24px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 14px;
+            color: #9e9e9e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .data-table td {
+            padding: 20px 24px;
+            font-size: 15px;
+            color: #000;
+        }
+
+        .data-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+            border-color: #2196F3;
+            color: #2196F3;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+
+        .pagination-dots {
+            padding: 0 8px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-appliquer {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rapports-container">
+        <!-- Filtres -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <span class="filters-label">Filtrer par :</span>
+                <select class="filter-select" id="regionSelect">
+                    <option value="">Régions</option>
+                    <option value="dakar">Dakar</option>
+                    <option value="thies">Thiès</option>
+                    <option value="saint-louis">Saint-Louis</option>
+                </select>
+                <select class="filter-select" id="periodSelect">
+                    <option value="">Périodes</option>
+                    <option value="today">Aujourd'hui</option>
+                    <option value="week">Cette semaine</option>
+                    <option value="month">Ce mois</option>
+                </select>
+                <select class="filter-select" id="typeSelect">
+                    <option value="">Type de rapport</option>
+                    <option value="daily">Rapport journalier</option>
+                    <option value="weekly">Rapport hebdomadaire</option>
+                    <option value="monthly">Rapport mensuel</option>
+                </select>
+                <select class="filter-select" id="exportSelect">
+                    <option value="">Export CSV</option>
+                    <option value="csv">Télécharger CSV</option>
+                    <option value="excel">Télécharger Excel</option>
+                    <option value="pdf">Télécharger PDF</option>
+                </select>
+                <button class="btn-appliquer" onclick="applyFilters()">Appliquer</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Distributeur</th>
+                        <th>Localisation</th>
+                        <th>Date</th>
+                        <th>Volume</th>
+                        <th>Transaction</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>DK-001</td>
+                        <td>Dakar</td>
+                        <td>14/08/2025</td>
+                        <td>320L</td>
+                        <td>12 500 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>TH-002</td>
+                        <td>Thiès</td>
+                        <td>14/08/2025</td>
+                        <td>280L</td>
+                        <td>11 000 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>SL-003</td>
+                        <td>Saint-Louis</td>
+                        <td>13/08/2025</td>
+                        <td>350L</td>
+                        <td>13 750 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>DK-004</td>
+                        <td>Dakar</td>
+                        <td>13/08/2025</td>
+                        <td>290L</td>
+                        <td>11 375 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>TH-005</td>
+                        <td>Thiès</td>
+                        <td>12/08/2025</td>
+                        <td>310L</td>
+                        <td>12 150 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>DK-006</td>
+                        <td>Dakar</td>
+                        <td>12/08/2025</td>
+                        <td>275L</td>
+                        <td>10 800 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>SL-007</td>
+                        <td>Saint-Louis</td>
+                        <td>11/08/2025</td>
+                        <td>340L</td>
+                        <td>13 350 CFA</td>
+                    </tr>
+                    <tr>
+                        <td>TH-008</td>
+                        <td>Thiès</td>
+                        <td>11/08/2025</td>
+                        <td>295L</td>
+                        <td>11 575 CFA</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Affichage <strong>1-8</strong> sur <strong>156</strong> résultats
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" onclick="changePage('prev')" id="prevBtn">
+                        ←
+                    </button>
+                    <button class="pagination-btn active" onclick="changePage(1)">1</button>
+                    <button class="pagination-btn" onclick="changePage(2)">2</button>
+                    <button class="pagination-btn" onclick="changePage(3)">3</button>
+                    <span class="pagination-dots">...</span>
+                    <button class="pagination-btn" onclick="changePage(20)">20</button>
+                    <button class="pagination-btn" onclick="changePage('next')" id="nextBtn">
+                        →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 20;
+
+        function applyFilters() {
+            const region = document.getElementById('regionSelect').value;
+            const period = document.getElementById('periodSelect').value;
+            const type = document.getElementById('typeSelect').value;
+            const exportType = document.getElementById('exportSelect').value;
+
+            console.log('Filtres appliqués:', { region, period, type, exportType });
+            
+            // Simuler un chargement
+            const tableBody = document.getElementById('tableBody');
+            tableBody.style.opacity = '0.5';
+            setTimeout(() => {
+                tableBody.style.opacity = '1';
+                alert('Filtres appliqués avec succès!');
+            }, 300);
+        }
+
+        function changePage(page) {
+            if (page === 'prev') {
+                if (currentPage > 1) currentPage--;
+            } else if (page === 'next') {
+                if (currentPage < totalPages) currentPage++;
+            } else {
+                currentPage = page;
+            }
+
+            updatePagination();
+            
+            // Simuler le chargement des données
+            const tableBody = document.getElementById('tableBody');
+            tableBody.style.opacity = '0.5';
+            setTimeout(() => {
+                tableBody.style.opacity = '1';
+            }, 200);
+        }
+
+        function updatePagination() {
+            // Mettre à jour les boutons
+            const buttons = document.querySelectorAll('.pagination-btn:not(#prevBtn):not(#nextBtn)');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Activer le bouton de la page courante
+            const currentBtn = Array.from(buttons).find(btn => 
+                parseInt(btn.textContent) === currentPage
+            );
+            if (currentBtn) currentBtn.classList.add('active');
+
+            // Désactiver prev/next si nécessaire
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+
+            // Mettre à jour l'info
+            const start = (currentPage - 1) * 8 + 1;
+            const end = Math.min(currentPage * 8, 156);
+            document.querySelector('.pagination-info').innerHTML = 
+                `Affichage <strong>${start}-${end}</strong> sur <strong>156</strong> résultats`;
+        }
+
+        // Initialiser
+        updatePagination();
+    </script>
+</body>
+</html>
